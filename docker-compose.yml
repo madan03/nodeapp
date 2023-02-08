@@ -1,0 +1,39 @@
+version: '3'
+
+services:
+    nodejs-app:
+        build:
+          context: ./nodedocker_app
+          dockerfile: Dockerfile.nodejs
+        container_name: nodejsserver
+        hostname: nodejsserver
+        ports:
+            - "8888:8888"
+        volumes:
+            - nodejsv:/usr/src/app 
+        networks:
+            - example-net  
+    nginx:
+        build:
+          context: ./nginx_node
+          dockerfile: Dockerfile.nginx
+        container_name: nginx
+        hostname: nginx
+        ports:
+            - "80:80"
+        volumes:
+            - nginxv:/usr/src/app 
+        depends_on:
+            - nodejs-app
+        networks:
+            - example-net
+
+
+volumes:
+  nodejsv:
+  nginxv:
+
+
+networks:
+  example-net:
+    external: true
